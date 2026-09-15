@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">VoiceAssistant</string>
+    <string name="accessibility_description">خدمة المساعد الصوتي للتفاعل مع التطبيقات والتحكم بالهاتف عبر الأوامر الصوتية.</string>
+</resources>
+
