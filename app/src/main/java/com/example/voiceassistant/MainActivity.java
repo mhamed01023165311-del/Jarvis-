@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -20,17 +19,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // البحث عن التكست بكل الأيقونات المحتملة
-        tvStatus = findViewById(R.id.tvStatus);
+        // البحث عن التكست والزر ديناميكياً باستخدام getIdentifier لمنع خطأ R.id
+        int statusId = getResources().getIdentifier("tvStatus", "id", getPackageName());
+        if (statusId != 0) {
+            tvStatus = findViewById(statusId);
+        }
 
-        // البحث عن الزر بأي ID محتمل في ملف الـ XML لمنع خطأ البناء
-        btnEnable = findViewById(R.id.btnEnable);
-        if (btnEnable == null) {
-            btnEnable = findViewById(R.id.btn_enable_accessibility);
-        }
-        if (btnEnable == null) {
-            btnEnable = findViewById(R.id.buttonEnable);
-        }
+        btnEnable = findViewByPossibleIds("btnEnable", "btn_enable_accessibility", "buttonEnable", "btn_enable");
 
         if (btnEnable != null) {
             btnEnable.setOnClickListener(new View.OnClickListener() {
@@ -41,6 +36,17 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         }
+    }
+
+    private View findViewByPossibleIds(String... ids) {
+        for (String idName : ids) {
+            int resId = getResources().getIdentifier(idName, "id", getPackageName());
+            if (resId != 0) {
+                View view = findViewById(resId);
+                if (view != null) return view;
+            }
+        }
+        return null;
     }
 
     @Override
