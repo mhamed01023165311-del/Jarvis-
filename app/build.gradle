@@ -25,6 +25,7 @@ dependencies {
     implementation 'com.google.android.material:material:1.8.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
 
-    // الاعتماد على نسخة مجتمعية متوفرة عبر JitPack
-    implementation 'com.github.alphacep:vosk-android:0.3.47'
+    // المسار الرسمي لمكتبة Vosk على Maven Central
+    implementation 'com.alphacephei:vosk-android:0.3.47@aar'
+    implementation 'net.java.dev.jna:jna:5.13.0@aar'
 }
