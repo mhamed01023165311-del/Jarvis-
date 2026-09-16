@@ -13,23 +13,34 @@ import androidx.appcompat.app.AppCompatActivity;
 public class MainActivity extends AppCompatActivity {
 
     private TextView tvStatus;
-    private Button btnEnable;
+    private View btnEnable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        tvStatus = findViewById(R.id.tvStatus); // تأكد من الـ ID في الـ XML
-        btnEnable = findViewById(R.id.btnEnable); // تأكد من الـ ID في الـ XML
+        // البحث عن التكست بكل الأيقونات المحتملة
+        tvStatus = findViewById(R.id.tvStatus);
 
-        btnEnable.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
-                startActivity(intent);
-            }
-        });
+        // البحث عن الزر بأي ID محتمل في ملف الـ XML لمنع خطأ البناء
+        btnEnable = findViewById(R.id.btnEnable);
+        if (btnEnable == null) {
+            btnEnable = findViewById(R.id.btn_enable_accessibility);
+        }
+        if (btnEnable == null) {
+            btnEnable = findViewById(R.id.buttonEnable);
+        }
+
+        if (btnEnable != null) {
+            btnEnable.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
+                    startActivity(intent);
+                }
+            });
+        }
     }
 
     @Override
@@ -39,12 +50,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateServiceStatus() {
-        if (isAccessibilityServiceEnabled(this, AppAccessibilityService.class)) {
-            tvStatus.setText("Voice Assistant: Enabled");
-            btnEnable.setVisibility(View.GONE);
-        } else {
-            tvStatus.setText("Voice Assistant: Disabled");
-            btnEnable.setVisibility(View.VISIBLE);
+        boolean isEnabled = isAccessibilityServiceEnabled(this, AppAccessibilityService.class);
+        
+        if (tvStatus != null) {
+            tvStatus.setText(isEnabled ? "Voice Assistant: Enabled" : "Voice Assistant: Disabled");
+        }
+        
+        if (btnEnable != null) {
+            btnEnable.setVisibility(isEnabled ? View.GONE : View.VISIBLE);
         }
     }
 
