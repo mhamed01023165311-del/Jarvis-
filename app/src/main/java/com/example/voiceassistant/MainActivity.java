@@ -6,47 +6,30 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
 
     private TextView tvStatus;
-    private View btnEnable;
+    private Button btnEnable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // البحث عن التكست والزر ديناميكياً باستخدام getIdentifier لمنع خطأ R.id
-        int statusId = getResources().getIdentifier("tvStatus", "id", getPackageName());
-        if (statusId != 0) {
-            tvStatus = findViewById(statusId);
-        }
+        tvStatus = findViewById(R.id.tvStatus);
+        btnEnable = findViewById(R.id.btnEnable);
 
-        btnEnable = findViewByPossibleIds("btnEnable", "btn_enable_accessibility", "buttonEnable", "btn_enable");
-
-        if (btnEnable != null) {
-            btnEnable.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
-                    startActivity(intent);
-                }
-            });
-        }
-    }
-
-    private View findViewByPossibleIds(String... ids) {
-        for (String idName : ids) {
-            int resId = getResources().getIdentifier(idName, "id", getPackageName());
-            if (resId != 0) {
-                View view = findViewById(resId);
-                if (view != null) return view;
+        btnEnable.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
+                startActivity(intent);
             }
-        }
-        return null;
+        });
     }
 
     @Override
@@ -57,11 +40,11 @@ public class MainActivity extends AppCompatActivity {
 
     private void updateServiceStatus() {
         boolean isEnabled = isAccessibilityServiceEnabled(this, AppAccessibilityService.class);
-        
+
         if (tvStatus != null) {
             tvStatus.setText(isEnabled ? "Voice Assistant: Enabled" : "Voice Assistant: Disabled");
         }
-        
+
         if (btnEnable != null) {
             btnEnable.setVisibility(isEnabled ? View.GONE : View.VISIBLE);
         }
