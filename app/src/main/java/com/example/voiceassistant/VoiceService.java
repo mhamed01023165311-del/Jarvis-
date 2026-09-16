@@ -5,74 +5,62 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.util.Log;
 
-import edu.cmu.pocketsphinx.Assets;
-import edu.cmu.pocketsphinx.Hypothesis;
-import edu.cmu.pocketsphinx.RecognitionListener;
-import edu.cmu.pocketsphinx.SpeechRecognizer;
-import edu.cmu.pocketsphinx.SpeechRecognizerSetup;
-
-import java.io.File;
-import java.io.IOException;
+import org.vosk.Model;
+import org.vosk.Recognizer;
+import org.vosk.android.RecognitionListener;
+import org.vosk.android.SpeechService;
 
 public class VoiceService extends Service implements RecognitionListener {
 
-    private SpeechRecognizer recognizer;
+    private SpeechService speechService;
 
     @Override
     public void onCreate() {
         super.onCreate();
-        setupRecognizer();
+        Log.d("VoiceService", "VoiceService Created");
     }
 
-    private void setupRecognizer() {
-        try {
-            Assets assets = new Assets(this);
-            File assetDir = assets.syncAssets();
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        return START_STICKY;
+    }
 
-            recognizer = SpeechRecognizerSetup.defaultSetup()
-                    .setAcousticModel(new File(assetDir, "en-us-ptm"))
-                    .setDictionary(new File(assetDir, "cmudict-en-us.dict"))
-                    .getRecognizer();
+    @Override
+    public IBinder onBind(Intent intent) {
+        return null;
+    }
 
-            recognizer.addListener(this);
+    @Override
+    public void onPartialResult(String hypothesis) {
+        Log.d("VoiceService", "Partial: " + hypothesis);
+    }
 
-            // إضافة الكلمات المراد التعرف عليها أوفلاين
-            recognizer.addKeyphraseSearch("kws", "open whatsapp");
-            recognizer.startListening("kws");
+    @Override
+    public void onResult(String hypothesis) {
+        Log.d("VoiceService", "Result: " + hypothesis);
+    }
 
-        } catch (IOException e) {
-            Log.e("VoiceService", "Error setting up recognizer: " + e.getMessage());
+    @Override
+    public void onFinalResult(String hypothesis) {
+        Log.d("VoiceService", "Final: " + hypothesis);
+    }
+
+    @Override
+    public void onError(Exception exception) {
+        Log.e("VoiceService", "Error: " + exception.getMessage());
+    }
+
+    @Override
+    public void onTimeout() {
+        Log.d("VoiceService", "Timeout");
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (speechService != null) {
+            speechService.stop();
+            speechService.shutdown();
         }
     }
-
-    @Override
-    public void onPartialResult(Hypothesis hypothesis) {
-        if (hypothesis == null) return;
-        String text = hypothesis.getHypstr();
-        if (text.equals("open whatsapp")) {
-            recognizer.stop();
-            executeCommand(text);
-            recognizer.startListening("kws");
-        }
-    }
-
-    private void executeCommand(String command) {
-        Intent intent = new Intent(this, AppAccessibilityService.class);
-        intent.putExtra("COMMAND", command);
-        startService(intent);
-    }
-
-    @Override
-    public void onResult(Hypothesis hypothesis) {}
-    @Override
-    public void onBeginningOfSpeech() {}
-    @Override
-    public void onEndOfSpeech() {}
-    @Override
-    public void onError(Exception error) {}
-    @Override
-    public void onTimeout() {}
-    @Override
-    public IBinder onBind(Intent intent) { return null; }
 }
-
