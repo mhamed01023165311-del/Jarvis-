@@ -5,20 +5,12 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.util.Log;
 
-import org.vosk.Model;
-import org.vosk.Recognizer;
 import org.vosk.android.RecognitionListener;
 import org.vosk.android.SpeechService;
 
 public class VoiceService extends Service implements RecognitionListener {
 
     private SpeechService speechService;
-
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        Log.d("VoiceService", "VoiceService Created");
-    }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -31,36 +23,17 @@ public class VoiceService extends Service implements RecognitionListener {
     }
 
     @Override
-    public void onPartialResult(String hypothesis) {
-        Log.d("VoiceService", "Partial: " + hypothesis);
-    }
+    public void onPartialResult(String hypothesis) {}
 
     @Override
-    public void onResult(String hypothesis) {
-        Log.d("VoiceService", "Result: " + hypothesis);
-    }
+    public void onResult(String hypothesis) {}
 
     @Override
-    public void onFinalResult(String hypothesis) {
-        Log.d("VoiceService", "Final: " + hypothesis);
-    }
+    public void onFinalResult(String hypothesis) {}
 
     @Override
-    public void onError(Exception exception) {
-        Log.e("VoiceService", "Error: " + exception.getMessage());
-    }
+    public void onError(Exception exception) {}
 
     @Override
-    public void onTimeout() {
-        Log.d("VoiceService", "Timeout");
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        if (speechService != null) {
-            speechService.stop();
-            speechService.shutdown();
-        }
-    }
+    public void onTimeout() {}
 }
