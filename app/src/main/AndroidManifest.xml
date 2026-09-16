@@ -1,42 +1,23 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.voiceassistant">
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
-    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
-        android:label="VoiceAssistant"
-        android:theme="@style/Theme.AppCompat.Light.NoActionBar">
-
-        <activity android:name=".MainActivity"
+        android:label="Jarvis"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.AppCompat.Light.DarkActionBar">
+        
+        <activity
+            android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <!-- خدمة التعرف الصوتي في الخلفية -->
-        <service
-            android:name=".VoiceService"
-            android:enabled="true"
-            android:exported="false" />
-
-        <!-- خدمة إتاحة الوصول لمحاكاة الضغطات -->
-        <service
-            android:name=".AppAccessibilityService"
-            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.accessibilityservice.AccessibilityService" />
-            </intent-filter>
-            <meta-data
-                android:name="android.accessibilityservice"
-                android:resource="@xml/accessibility_service_config" />
-        </service>
-
     </application>
-</manifest>
 
+</manifest>
